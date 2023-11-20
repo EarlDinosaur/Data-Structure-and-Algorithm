@@ -10,7 +10,7 @@ int main() {
         printf("Start       : ");
         scanf("%d", &start);
 
-        /*can use the ternary operator but unable to function in my code*/
+
         if (start >= 0 && start <= 13) {
             if (start == 0) {
                 exit(EXIT_FAILURE);
