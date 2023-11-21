@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#define ADVISERS 13
+#define ADVISORS 13
 
 struct listNode {
     int data;
@@ -10,28 +10,33 @@ struct listNode {
 typedef struct listNode ListDataType;
 typedef ListDataType *NODE;
 
-void enqueueAdviser(NODE*, NODE*, NODE*);
-NODE startingPoint(NODE* , int);
-void dequeueAdviser(NODE , int, int);
+void enqueueAdvisor(NODE*, NODE*, NODE*);
+NODE dequeueAdvisor(NODE*, NODE* , int, int);
+void printChosenAdvisors(NODE);
 
 int main() {
 
-    int adviser, interval;
+    int advisor, interval;
     NODE head = NULL, current = NULL, tail = NULL;
 
-    while (adviser > 0) {
+    while (1) {
 
-        enqueueAdviser(&head, &current, &tail);
+        enqueueAdvisor(&head, &current, &tail);
 
         printf("Start        : ");
-        scanf("%d", &adviser);
-
-        int startingPosition = startingPoint(&head, adviser);
+        scanf("%d", &advisor);
         
+        if(advisor == 0) {
+            printf("Exiting the Program...");
+            break;
+        }
+
         printf("Interval    : ");
         scanf("%d", &interval);
 
-        dequeueAdviser(current, interval, startingPosition);
+        NODE result = dequeueAdvisor(&current, &head, interval, advisor);
+
+        printChosenAdvisors(result);
     }
     
     return 0;
@@ -40,7 +45,7 @@ int main() {
 /*Function to create the queue of adviser 1 to 13*/
 void enqueueAdviser(NODE* head, NODE* current, NODE* tail) {
 
-    for (int data = 0; data < ADVISERS; data++) {
+    for (int data = 0; data < ADVISORS; data++) {
         
         *current  = malloc(sizeof(ListDataType));
         (*current)->data = data + 1;
@@ -50,43 +55,47 @@ void enqueueAdviser(NODE* head, NODE* current, NODE* tail) {
             *head = *tail = *current;
         } 
         else {
-            (*tail)->nextPointer = current;
-            *tail = current;
+            (*tail)->nextPointer = *current;
+            *tail = *current;
         }
     }
 
-    (*tail)->nextPointer = head;
+    (*tail)->nextPointer = *head;
 }
 
-/*Function to find the initial point for each interval*/
-NODE startingPoint(NODE *head, int start) {
-
-    NODE current = *head;
-
-    while (current->data != start) {
-        NODE temp = current;
-        current = current->nextPointer;
-        free(temp);
-    }
-
-    return current;
-}
-
-void dequeueAdviser(NODE current, int interval, int startingPosition) {
+NODE dequeueAdviser(NODE* current, NODE* head, int interval, int startingPosition) {
 
     int num = 0;
-    NODE result = NULL;
+    NODE *result = NULL;
+    NODE previousCurrent = *current;
 
-    while (num < ADVISERS) {
-        
-        if (current->data == startingPosition)
-        {
+    while (num < ADVISORS) {
+       
+        if ((*current)->data == startingPosition) {
             result = malloc(sizeof(ListDataType));
-            result->data = current;
-            result->nextPointer = NULL;
+            (*result)->data = (*current)->data;
+            (*result)->nextPointer = NULL;
+            num++;
         }
         else {
-            result = result->nextPointer;
-        }   
+            previousCurrent->nextPointer = (*current)->nextPointer;
+            free(*current);
+            (*current)->nextPointer = previousCurrent->nextPointer;
+        }
+        previousCurrent = *current;
+        *current = (*current)->nextPointer;
     }
+
+    return *result;
+}
+
+void printChosenAdvisors(NODE result) {
+
+    printf("Chosen Advisers : ");
+    while(result != NULL) {   //loop will continue until all nodes are exhausted
+        printf("%d", result->data);            
+        result = result->nextPointer;
+        if(result != NULL) printf(", ");
+    }
+    printf("\n");
 }
