@@ -87,10 +87,15 @@ int main() {
     int advisor = 1, interval;
     linkedliststruct head = NULL, tail = NULL, current = NULL;
 
-    while (advisor != 0) {
+    while (1) {
         // Enqueue elements
         for (int i = 1; i < 14; i++) {
             create(&current, &head, &tail, i);
+        }
+
+        if (advisor == 0) {
+            printf("Exiting the program...");
+            break;  //break the loop
         }
 
         printf("Enter the starting position of the advisor: ");
@@ -121,7 +126,5 @@ int main() {
             current = next;
         } while (current != head);
     }
-    
-    printf("Exiting the program...");
     return 0;
 }

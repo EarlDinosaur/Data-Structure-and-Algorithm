@@ -11,19 +11,19 @@ typedef struct listNode ListDataType;
 typedef ListDataType *NODE;
 
 void enqueueAdvisor(NODE*, NODE*, NODE*);
-NODE dequeueAdvisor(NODE*, NODE* , int, int);
+NODE dequeueAdvisor(NODE*, NODE* ,int , int);
 void printChosenAdvisors(NODE);
 
 int main() {
 
     int advisor, interval;
     NODE head = NULL, current = NULL, tail = NULL;
-
+    
     while (1) {
 
         enqueueAdvisor(&head, &current, &tail);
 
-        printf("Start        : ");
+        printf("Enter the starting position of the advisor : ");
         scanf("%d", &advisor);
         
         if(advisor == 0) {
@@ -43,15 +43,17 @@ int main() {
 }
 
 /*Function to create the queue of adviser 1 to 13*/
-void enqueueAdviser(NODE* head, NODE* current, NODE* tail) {
+void enqueueAdvisor(NODE* head, NODE* current, NODE* tail) {
+
+    *head = NULL;
+    *tail = NULL;
 
     for (int data = 0; data < ADVISORS; data++) {
-        
         *current  = malloc(sizeof(ListDataType));
         (*current)->data = data + 1;
         (*current)->nextPointer = NULL;
 
-        if (head == NULL) {
+        if (*head == NULL) {
             *head = *tail = *current;
         } 
         else {
@@ -63,30 +65,48 @@ void enqueueAdviser(NODE* head, NODE* current, NODE* tail) {
     (*tail)->nextPointer = *head;
 }
 
-NODE dequeueAdviser(NODE* current, NODE* head, int interval, int startingPosition) {
-
-    int num = 0;
-    NODE *result = NULL;
+NODE dequeueAdvisor(NODE* current, NODE* head, int interval, int startingPosition) {
+    NODE result = NULL;
     NODE previousCurrent = *current;
 
-    while (num < ADVISORS) {
-       
-        if ((*current)->data == startingPosition) {
-            result = malloc(sizeof(ListDataType));
-            (*result)->data = (*current)->data;
-            (*result)->nextPointer = NULL;
-            num++;
-        }
-        else {
-            previousCurrent->nextPointer = (*current)->nextPointer;
-            free(*current);
-            (*current)->nextPointer = previousCurrent->nextPointer;
-        }
+    // Find the starting advisor
+    while (*current != NULL && (*current)->data != startingPosition) {
         previousCurrent = *current;
         *current = (*current)->nextPointer;
     }
 
-    return *result;
+    // Start counting and dequeue advisors
+    int count = 0;
+    while (count < interval) {
+        // Store the dequeued advisor in the result linked list
+        if (result == NULL) {
+            result = malloc(sizeof(ListDataType));
+            result->data = (*current)->data;
+            result->nextPointer = NULL;
+        } else {
+            NODE temp = malloc(sizeof(ListDataType));
+            temp->data = (*current)->data;
+            temp->nextPointer = result;
+            result = temp;
+        }
+
+        count++;
+
+        // Check if we have reached the end of the circular linked list
+        if (*current == *head) {
+            break;
+        }
+
+        // Update pointers to remove the dequeued advisor
+        previousCurrent->nextPointer = (*current)->nextPointer;
+
+        // Free the dequeued advisor
+        NODE temp = *current;
+        *current = (*current)->nextPointer;
+        free(temp);
+    }
+
+    return result;
 }
 
 void printChosenAdvisors(NODE result) {
