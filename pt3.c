@@ -1,23 +1,23 @@
-    /*  Group Members:          (BSCS 2-4)
+/*  Group Members:          (BSCS 2-4)
         1. Llesis, Earl Gem
         2. Palpal-latoc, Alfred Joshua I.
-        3.
-        4.
-        5.
-        6.
-        7.
-        8.
+        3. Torres, Nigel Frederick J.
+        4. Montemayor, Keith Reijay
+        5. Bognot, Kristina Cassandra
+        6. Mancilla, Natalia Angela S. 
+        7. Frilles, Roljohn
+        8. Reyes, Rainer Joshua
     */
 
 #include <stdio.h>
-#include <stdlib.h>
-#define ADVISORS 13
-#define NUMSELECTED 5
+#include <stdlib.h> // for memory allocation (malloc)
+#define ADVISORS 13 // there are 13 advisors of the president
+#define NUMSELECTED 5 // only 5 can be selected from them
 
 struct adviserNode {
     int data;
     struct adviserNode *next;
-};
+}; // structure node linked list
 
 typedef struct adviserNode listDataType;    //name of datatype is 'listDataType'
 typedef listDataType *NODEPTR;              //name of the datatype is '*NODEPTR'
@@ -49,10 +49,10 @@ int main() {
             continue;
         }
 
-        printf("=================================\n");
+        printf("=============================================\n");
         NODEPTR adviserCircle = queueCircle(ADVISORS);
         dequeueSelection(&adviserCircle, start, interval);
-        printf("=================================");
+        printf("=============================================");
 
         freeNodes(&adviserCircle);
         
@@ -106,10 +106,11 @@ void dequeueSelection(NODEPTR *head, int start, int interval) {
     for (int i = 0; i < NUMSELECTED; i++) {
         for (int j = 1; j < interval; j++) {
             current = current->next;
-        }
+        }   // For counting interval
 
         printf("%d", current->data);
 
+        // Removes comma at the end of chosen advisors
         if (i < NUMSELECTED - 1) printf(", ");
 
         NODEPTR temp = current->next;
