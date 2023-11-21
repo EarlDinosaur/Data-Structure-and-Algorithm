@@ -1,39 +1,42 @@
 /*  Group Members:          (BSCS 2-4)
         1. Llesis, Earl Gem
-        2. Palpal-latoc, Alfred Joshua I.
+        2. Palpal-Latoc, Alfred Joshua I.
         3. Torres, Nigel Frederick J.
         4. Montemayor, Keith Reijay
         5. Bognot, Kristina Cassandra
-        6. Mancilla, Natalia Angela S. 
+        6. Mancilla, Natalia Angela S.
         7. Frilles, Roljohn
         8. Reyes, Rainer Joshua
-    */
+*/
 
 #include <stdio.h>
-#include <stdlib.h> // for memory allocation (malloc)
-#define ADVISORS 13 // there are 13 advisors of the president
-#define NUMSELECTED 5 // only 5 can be selected from them
+// for memory allocation (malloc)
+#include <stdlib.h> 
+// There are 13 advisors of the president
+#define ADVISORS 13 
+// Only five can be selected from them
+#define NUMSELECTED 5 
 
 struct adviserNode {
     int data;
     struct adviserNode *next;
 }; // structure node linked list
 
-typedef struct adviserNode listDataType;    //name of datatype is 'listDataType'
-typedef listDataType *NODEPTR;              //name of the datatype is '*NODEPTR'
+typedef struct adviserNode listDataType;    // Initialize a Data type that is named 'listDataType'
+typedef listDataType *NODEPTR;              // Initialize a pointer to the Data type 'listDataType', which is named '*NODEPTR'
 
-NODEPTR head, tail, current;
+NODEPTR head, tail, current;                // Initialize 3 pointers for the linked list
 
-NODEPTR enqueueAdviser(int);                //Function to make a node for each adviser
-NODEPTR queueCircle(int);                   //Function to connect each node into a circular form
-void dequeueSelection(NODEPTR*, int, int);  //Function to Select the Chosen Adviser in dequeue it from the queue
-void freeNodes(NODEPTR*);                   //Function to free memory
+NODEPTR enqueueAdviser(int);                // Function to enqueue or make a node for each adviser
+NODEPTR queueCircle(int);                   // Function to connect each node into a circular linked list
+void dequeueSelection(NODEPTR*, int, int);  // Function to dequeue the Chosen Advisors from the queue
+void freeNodes(NODEPTR*);                   // Function to free memory
 
 int main() {
     int start, interval;
-
+    // Create a loop for the user interface that will only end if they enter 0 as the starting point advisor
     while (1){
-        printf("\nSelect a Starting Point Adviser: ");
+        printf("Select a Starting Point Adviser: "); 
         scanf("%d", &start);
 
         if (start == 0) {
@@ -45,14 +48,14 @@ int main() {
         scanf("%d", &interval);
 
         if (start < 1 || start > 13 || interval < 1 || interval > 100) {
-            printf("Invalid input. Please enter valid values.\n");
+            printf("Invalid input. Please enter valid values.");
             continue;
         }
 
         printf("=============================================\n");
         NODEPTR adviserCircle = queueCircle(ADVISORS);
         dequeueSelection(&adviserCircle, start, interval);
-        printf("=============================================");
+        printf("=============================================\n");
 
         freeNodes(&adviserCircle);
         
@@ -71,14 +74,14 @@ NODEPTR enqueueAdviser(int num) {
     return newAdviser;
 }
 
-/*Function to connect each node into a circular form*/
+/*Function to connect each node into a circular linked list*/
 NODEPTR queueCircle(int numAdvisers) {
 
     head = tail = NULL;
-
+        
     for (int i = 1; i <= numAdvisers; i++) {
         NODEPTR newAdviser = enqueueAdviser(i);
-        if (newAdviser != NULL) {
+            if (newAdviser != NULL) {
             if (head == NULL) {
                 head = tail = newAdviser;
             } else {
@@ -93,27 +96,29 @@ NODEPTR queueCircle(int numAdvisers) {
     return head;
 }
 
-/*Function to Select the Chosen Adviser in dequeue it from the queue*/
+/*Function to dequeue the Chosen Advisers from the queue*/
 void dequeueSelection(NODEPTR *head, int start, int interval) {
     
     printf("Chosen Advisers: ");
     current = *head;
 
+    // Move the list to the starting adviser
     for (int i = 1; i < start; i++) {
-        current = current->next; // Move to the starting adviser
+        current = current->next; 
     }
 
+    // For transversing the list according to the interval
     for (int i = 0; i < NUMSELECTED; i++) {
         for (int j = 1; j < interval; j++) {
             current = current->next;
-        }   // For counting interval
-
+        }   
         printf("%d", current->data);
 
         // Removes comma at the end of chosen advisors
         if (i < NUMSELECTED - 1) printf(", ");
 
         NODEPTR temp = current->next;
+            
         // Remove the selected adviser from the circle
         current->data = temp->data;
         current->next = temp->next;
@@ -126,7 +131,7 @@ void dequeueSelection(NODEPTR *head, int start, int interval) {
     printf("\n");
 }
 
-/*Function to delete all nodes*/
+/*Function to reset or delete all nodes*/
 void freeNodes(NODEPTR *head) {
     current = *head;
     NODEPTR temp;
